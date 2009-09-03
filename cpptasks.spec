@@ -1,6 +1,6 @@
 Name:		cpptasks
 Version:	1.0b5
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Compile and link task for ant
 
 Group:		Development/Libraries
@@ -15,7 +15,7 @@ BuildRequires:	ant
 BuildRequires:	ant-junit 
 BuildRequires:	jpackage-utils 
 BuildRequires:	junit
-BuildRequires:	maven2
+#BuildRequires:	mave
 
 Requires:	ant 
 Requires:	java
@@ -34,7 +34,7 @@ MIDL and Windows Resource files.
 %package        javadoc
 Summary:	Javadoc for %{name}
 Group:		Documentation
-Requires:	%{name}-%{version}-%{release}
+Requires:	%{name}>=%{version}-%{release}
 Requires:	jpackage-utils
 
 %description	javadoc
@@ -129,6 +129,11 @@ rm -rf $RPM_BUILD_ROOT
 # -----------------------------------------------------------------------------
 
 %changelog
+* Thu Sep 03 2009 D Haley <mycae@yahoo.com> - 1.0b5-3
+- Remove excess BR
+- Fix subpackage dep
+- Fix doc installation 
+
 * Fri Aug 28 2009 D Haley <mycae@yahoo.com> - 1.0b5-2
 - Fix doc installation 
 - Move to _javadir/ant/ rather than _javadir/
