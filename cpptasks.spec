@@ -1,6 +1,6 @@
 Name:		cpptasks
 Version:	1.0b5
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	Compile and link task for ant
 
 Group:		Development/Libraries
@@ -34,7 +34,7 @@ MIDL and Windows Resource files.
 %package        javadoc
 Summary:	Javadoc for %{name}
 Group:		Documentation
-Requires:	%{name}>=%{version}-%{release}
+Requires:	%{name} >= %{version}-%{release}
 Requires:	jpackage-utils
 
 %description	javadoc
@@ -129,6 +129,9 @@ rm -rf $RPM_BUILD_ROOT
 # -----------------------------------------------------------------------------
 
 %changelog
+* Sun Sep 06 2009 D Haley <mycae@yahoo.com> - 1.0b5-4
+- Insert space needed for subdep 
+
 * Thu Sep 03 2009 D Haley <mycae@yahoo.com> - 1.0b5-3
 - Remove excess BR
 - Fix subpackage dep
