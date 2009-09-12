@@ -1,6 +1,6 @@
 Name:		cpptasks
 Version:	1.0b5
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	Compile and link task for ant
 
 Group:		Development/Libraries
@@ -129,8 +129,11 @@ rm -rf $RPM_BUILD_ROOT
 # -----------------------------------------------------------------------------
 
 %changelog
-* Sun Sep 06 2009 D Haley <mycae@yahoo.com> - 1.0b5-4
-- Insert space needed for subdep 
+* Thu Sep 03 2009 D Haley <mycae@yahoo.com> - 1.0b5-5
+- Req needs whitespace
+
+* Thu Sep 03 2009 D Haley <mycae@yahoo.com> - 1.0b5-4
+- tag bump
 
 * Thu Sep 03 2009 D Haley <mycae@yahoo.com> - 1.0b5-3
 - Remove excess BR
