@@ -1,6 +1,6 @@
 Name:		cpptasks
 Version:	1.0b5
-Release:	6%{?dist}
+Release:	7%{?dist}
 Summary:	Compile and link task for ant
 
 Group:		Development/Libraries
@@ -129,6 +129,9 @@ rm -rf $RPM_BUILD_ROOT
 # -----------------------------------------------------------------------------
 
 %changelog
+* Thu Jan 12 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0b5-7
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+
 * Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0b5-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 
