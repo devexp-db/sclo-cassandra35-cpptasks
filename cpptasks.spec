@@ -1,29 +1,19 @@
 Name:		cpptasks
 Version:	1.0b5
-Release:	10%{?dist}
+Release:	11%{?dist}
 Summary:	Compile and link task for ant
 
 Group:		Development/Libraries
 
 License:	ASL 2.0
 URL:		http://ant-contrib.sourceforge.net/
-Vendor:		Ant contrib project
 Source0:	http://downloads.sourceforge.net/ant-contrib/cpptasks-1.0b5.tar.gz
 Source1:	%{name}-README.fedora
 
 BuildRequires:	ant 
-BuildRequires:	ant-junit 
-BuildRequires:	jpackage-utils 
-BuildRequires:	junit
-#BuildRequires:	mave
-
-Requires:	ant 
-Requires:	java
-Requires:	jpackage-utils
+BuildRequires:	maven-local
 
 BuildArch:	noarch
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-	
 
 %description
 This ant task can compile various source languages and produce
@@ -34,101 +24,46 @@ MIDL and Windows Resource files.
 %package        javadoc
 Summary:	Javadoc for %{name}
 Group:		Documentation
-Requires:	%{name} >= %{version}-%{release}
-Requires:	jpackage-utils
 
 %description	javadoc
 Javadoc documentation for %{summary}.
 
-
-#The manual for b5 has been moved to xdoc (doxia) format.
-# This requires maven, which requires many dependencies which we don't have.
-#%package	manual
-#Summary:	Docs for %{name}
-#Group:		Development/Documentation
-
-#%description	manual
-#User manual for %{summary}.
-
 %prep
-%setup -q -n %{name}-%{version}
+%setup -q
 
-#End of line conversion
-%{__sed} -i 's/\r//' NOTICE 
+find . -name "*.jar" -exec rm -f {} \;
+find . -name "*.class" -exec rm -f {} \;
 
-#Check for exisiting jar files
-JAR_files=""
-for j in $(find -name \*.jar); do
-if [ ! -L $j ] ; then
-	JAR_files="$JAR_files $j"
-	fi
-done
-
-if [ ! -z "$JAR_files" ] ; then
-	echo "These JAR files should be deleted and symlinked to system JAR files: $JAR_files"
-	exit 1
-fi
+sed -i 's/\r//' NOTICE 
 
 cp -p %{SOURCE1} ./README.fedora
 
-%build
-export OPT_JAR_LIST="ant/ant-junit junit"
-export CLASSPATH=
-ant jars javadocs 
+%pom_remove_dep ant:ant
+%pom_add_dep org.apache.ant:ant
 
-#In lieu of maven built docs, which requires clirr
-#a URL is supplied in README.fedora
-#mvn-jpp site
+%mvn_file :%{name} ant/%{name}
+
+%build
+%mvn_build
 
 %install
-rm -rf $RPM_BUILD_ROOT
+%mvn_install
 
-
-# jars
-mkdir -p $RPM_BUILD_ROOT%{_javadir}/ant/
-install -Dpm 644 target/lib/%{name}.jar \
-	$RPM_BUILD_ROOT%{_javadir}/ant/%{name}-%{version}.jar
-
-pushd $RPM_BUILD_ROOT%{_javadir}/ant/
-ln -s %{name}-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/ant/%{name}.jar
-popd
-
-# javadoc
-install -dm 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-
-cp -pr target/javadocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-ln -s %{name}-%{version} $RPM_BUILD_ROOT%{_javadocdir}/%{name} # ghost symlink
-
-# manual - 
-#install -dm 755 $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
-#cp -pr docs/* $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
-
-#Place a file into ant's config dir
+# Place a file into ant's config dir
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/ant.d/
-echo "%{name} ant/%{name}" > $RPM_BUILD_ROOT/%{_sysconfdir}/ant.d/%{name}
+echo "ant/%{name}" > $RPM_BUILD_ROOT/%{_sysconfdir}/ant.d/%{name}
 
-
-%clean
-rm -rf $RPM_BUILD_ROOT
-
-%files
-%defattr(-,root,root,-)
+%files -f .mfiles
 %doc LICENSE NOTICE README.fedora
-%{_javadir}/ant/*.jar
 %{_sysconfdir}/ant.d/%{name}
 
-%files javadoc
-%defattr(-,root,root,-)
-%doc %{_javadocdir}/%{name}-%{version}
-%doc %{_javadocdir}/%{name}
-
-#%files manual
-#%defattr(-,root,root,-)
-#%doc %{_docdir}/%{name}-%{version}
-
-# -----------------------------------------------------------------------------
+%files javadoc -f .mfiles-javadoc
+%doc LICENSE NOTICE
 
 %changelog
+* Sun Aug 11 2013 Mat Booth <fedora@matbooth.co.uk> - 1.0b5-11
+- Build with maven 3, update for newer guidelines
+
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0b5-10
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
