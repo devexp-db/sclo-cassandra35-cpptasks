@@ -1,6 +1,6 @@
 Name:		cpptasks
 Version:	1.0b5
-Release:	11%{?dist}
+Release:	12%{?dist}
 Summary:	Compile and link task for ant
 
 Group:		Development/Libraries
@@ -38,7 +38,13 @@ sed -i 's/\r//' NOTICE
 
 cp -p %{SOURCE1} ./README.fedora
 
+# Use default compiler configuration
+%pom_remove_plugin :maven-compiler-plugin
+
+# Fix dependency on ant
 %pom_remove_dep ant:ant
+%pom_remove_dep ant:ant-nodeps
+%pom_remove_dep ant:ant-trax
 %pom_add_dep org.apache.ant:ant
 
 %mvn_file :%{name} ant/%{name}
@@ -61,6 +67,9 @@ echo "ant/%{name}" > $RPM_BUILD_ROOT/%{_sysconfdir}/ant.d/%{name}
 %doc LICENSE NOTICE
 
 %changelog
+* Mon Aug 12 2013 Mat Booth <fedora@matbooth.co.uk> - 1.0b5-12
+- Use default compiler config and fix bad deps on ant.
+
 * Sun Aug 11 2013 Mat Booth <fedora@matbooth.co.uk> - 1.0b5-11
 - Build with maven 3, update for newer guidelines
 
