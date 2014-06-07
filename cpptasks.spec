@@ -1,6 +1,6 @@
 Name:		cpptasks
 Version:	1.0b5
-Release:	12%{?dist}
+Release:	13%{?dist}
 Summary:	Compile and link task for ant
 
 Group:		Development/Libraries
@@ -67,6 +67,9 @@ echo "ant/%{name}" > $RPM_BUILD_ROOT/%{_sysconfdir}/ant.d/%{name}
 %doc LICENSE NOTICE
 
 %changelog
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0b5-13
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
 * Mon Aug 12 2013 Mat Booth <fedora@matbooth.co.uk> - 1.0b5-12
 - Use default compiler config and fix bad deps on ant.
 
