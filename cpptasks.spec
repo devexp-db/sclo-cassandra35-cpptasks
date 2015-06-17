@@ -1,9 +1,7 @@
 Name:		cpptasks
 Version:	1.0b5
-Release:	14%{?dist}
+Release:	15%{?dist}
 Summary:	Compile and link task for ant
-
-Group:		Development/Libraries
 
 License:	ASL 2.0
 URL:		http://ant-contrib.sourceforge.net/
@@ -23,7 +21,6 @@ MIDL and Windows Resource files.
 
 %package        javadoc
 Summary:	Javadoc for %{name}
-Group:		Documentation
 
 %description	javadoc
 Javadoc documentation for %{summary}.
@@ -40,6 +37,9 @@ cp -p %{SOURCE1} ./README.fedora
 
 # Use default compiler configuration
 %pom_remove_plugin :maven-compiler-plugin
+
+# Let xmvn generate javadocs
+%pom_remove_plugin :maven-javadoc-plugin
 
 # Fix dependency on ant
 %pom_remove_dep ant:ant
@@ -67,6 +67,9 @@ echo "ant/%{name}" > $RPM_BUILD_ROOT/%{_sysconfdir}/ant.d/%{name}
 %doc LICENSE NOTICE
 
 %changelog
+* Wed Jun 17 2015 Mat Booth <mat.booth@redhat.com> - 1.0b5-15
+- Fix FTBFS
+
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0b5-14
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
@@ -120,29 +123,3 @@ echo "ant/%{name}" > $RPM_BUILD_ROOT/%{_sysconfdir}/ant.d/%{name}
 - Fix BuildRoot 
 - Change licence to ASL 2.0 from Apache Software Licence 2.0
 - Documentation to "Documentation" Group
-
-* Sat Sep 02 2005 Anthony Green <green@redhat.com> - 0:1.0-0.b3.2jpp_1%{?dist}
-- Remove "ghost" for javadocs and javadoc postprocessing.
-- Place in Development/Libraries, not Development/Libraries/Java.
-- Remove epoch references.
-- Build into Fedora Extras.
-
-* Mon Sep 06 2004 Ralph Apel <r.apel at r-apel.de> - 0:1.0-0.b3.2jpp
-- Upgrade to Ant 1.6.X
-- Build with ant-1.6.2
-- Upgraded to 1.0.b3 and relaxed requirements on Thu Jul 15 2004 
-by Ralph Apel <r.apel at r-apel.de> as 0:1.0-0.b3.1jpp
-
-* Fri Aug 20 2004 Ralph Apel <r.apel at r-apel.de> - 0:1.0-0.b2.4jpp
-- Build with ant-1.6.2
-- Relax versioned BuildReq
-- Drop junit runtime requirement
-
-* Fri Aug 06 2004 Ralph Apel <r.apel at r-apel.de> - 0:1.0-0.b2.3jpp
-- Also runtime dep to Ant 1.6.X
-
-* Tue Jun 01 2004 Randy Watler <rwatler at finali.com> - 0:1.0-0.b2.2jpp
-- Upgrade to Ant 1.6.X
-
-* Wed Mar 24 2004 Ralph Apel <r.apel at r-apel.de> - 0:1.0-0.b2.1jpp
-- First JPackage release
