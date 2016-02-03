@@ -1,6 +1,6 @@
 Name:		cpptasks
 Version:	1.0b5
-Release:	15%{?dist}
+Release:	16%{?dist}
 Summary:	Compile and link task for ant
 
 License:	ASL 2.0
@@ -67,6 +67,9 @@ echo "ant/%{name}" > $RPM_BUILD_ROOT/%{_sysconfdir}/ant.d/%{name}
 %doc LICENSE NOTICE
 
 %changelog
+* Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 1.0b5-16
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
 * Wed Jun 17 2015 Mat Booth <mat.booth@redhat.com> - 1.0b5-15
 - Fix FTBFS
 
