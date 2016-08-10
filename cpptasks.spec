@@ -1,15 +1,20 @@
-Name:		cpptasks
+%{?scl:%scl_package cpptasks}
+%{!?scl:%global pkg_name %{name}}
+
+Name:           %{?scl_prefix}cpptasks
 Version:	1.0b5
-Release:	16%{?dist}
+Release:	17%{?dist}
 Summary:	Compile and link task for ant
 
 License:	ASL 2.0
 URL:		http://ant-contrib.sourceforge.net/
-Source0:	http://downloads.sourceforge.net/ant-contrib/cpptasks-1.0b5.tar.gz
-Source1:	%{name}-README.fedora
+Source0:	http://downloads.sourceforge.net/ant-contrib/%{pkg_name}-%{version}.tar.gz
+Source1:	%{pkg_name}-README.fedora
 
-BuildRequires:	ant 
-BuildRequires:	maven-local
+BuildRequires:	%{?scl_java_prefix}ant 
+BuildRequires:	%{?scl_java_prefix}maven-local
+BuildRequires:	%{?scl_mvn_prefix}maven-source-plugin
+%{?scl:Requires: %scl_runtime}
 
 BuildArch:	noarch
 
@@ -23,10 +28,11 @@ MIDL and Windows Resource files.
 Summary:	Javadoc for %{name}
 
 %description	javadoc
-Javadoc documentation for %{summary}.
+Javadoc documentation for %{name}.
 
 %prep
-%setup -q
+%{?scl_enable}
+%setup -q -n %{pkg_name}-%{version}
 
 find . -name "*.jar" -exec rm -f {} \;
 find . -name "*.class" -exec rm -f {} \;
@@ -47,26 +53,38 @@ cp -p %{SOURCE1} ./README.fedora
 %pom_remove_dep ant:ant-trax
 %pom_add_dep org.apache.ant:ant
 
-%mvn_file :%{name} ant/%{name}
+%mvn_file :%{pkg_name} ant/%{pkg_name}
+%{?scl_disable}
 
 %build
+%{?scl_enable}
 %mvn_build
+%{?scl_disable}
 
 %install
+%{?scl_enable}
 %mvn_install
+%{?scl_disable}
 
 # Place a file into ant's config dir
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/ant.d/
-echo "ant/%{name}" > $RPM_BUILD_ROOT/%{_sysconfdir}/ant.d/%{name}
+%{!?scl:mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/ant.d/}
+%{?scl:mkdir -p $RPM_BUILD_ROOT%{_root_sysconfdir}/ant.d/}
+%{!?scl:echo "ant/%{pkg_name}" > $RPM_BUILD_ROOT/%{_sysconfdir}/ant.d/%{pkg_name}}
+%{?scl:echo "ant/%{pkg_name}" > $RPM_BUILD_ROOT/%{_root_sysconfdir}/ant.d/%{pkg_name}}
 
 %files -f .mfiles
 %doc LICENSE NOTICE README.fedora
-%{_sysconfdir}/ant.d/%{name}
+%{!?scl:%{_sysconfdir}/ant.d/%{pkg_name}}
+%{?scl:%{_root_sysconfdir}/ant.d/%{pkg_name}}
 
 %files javadoc -f .mfiles-javadoc
 %doc LICENSE NOTICE
 
 %changelog
+* Wed Aug 10 2016 Tomas Repik <trepik@redhat.com> - 1.0b5-17
+- scl conversion
+- added missing build dependency (maven-source-plugin)
+
 * Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 1.0b5-16
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 
