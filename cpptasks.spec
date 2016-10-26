@@ -3,7 +3,7 @@
 
 Name:           %{?scl_prefix}cpptasks
 Version:	1.0b5
-Release:	17%{?dist}
+Release:	18%{?dist}
 Summary:	Compile and link task for ant
 
 License:	ASL 2.0
@@ -11,9 +11,9 @@ URL:		http://ant-contrib.sourceforge.net/
 Source0:	http://downloads.sourceforge.net/ant-contrib/%{pkg_name}-%{version}.tar.gz
 Source1:	%{pkg_name}-README.fedora
 
-BuildRequires:	%{?scl_java_prefix}ant 
-BuildRequires:	%{?scl_java_prefix}maven-local
-BuildRequires:	%{?scl_mvn_prefix}maven-source-plugin
+BuildRequires:	%{?scl_prefix_java_common}ant 
+BuildRequires:	%{?scl_prefix_maven}maven-local
+BuildRequires:	%{?scl_prefix_maven}maven-source-plugin
 %{?scl:Requires: %scl_runtime}
 
 BuildArch:	noarch
@@ -24,14 +24,13 @@ executables, shared libraries (aka DLL's) and static libraries. Compiler
 adaptors are currently available for several C/C++ compilers, FORTRAN,
 MIDL and Windows Resource files.
 
-%package        javadoc
+%package javadoc
 Summary:	Javadoc for %{name}
 
-%description	javadoc
+%description javadoc
 Javadoc documentation for %{name}.
 
 %prep
-%{?scl_enable}
 %setup -q -n %{pkg_name}-%{version}
 
 find . -name "*.jar" -exec rm -f {} \;
@@ -41,6 +40,7 @@ sed -i 's/\r//' NOTICE
 
 cp -p %{SOURCE1} ./README.fedora
 
+%{?scl:scl enable %{scl_maven} %{scl} - << "EOF"}
 # Use default compiler configuration
 %pom_remove_plugin :maven-compiler-plugin
 
@@ -54,33 +54,33 @@ cp -p %{SOURCE1} ./README.fedora
 %pom_add_dep org.apache.ant:ant
 
 %mvn_file :%{pkg_name} ant/%{pkg_name}
-%{?scl_disable}
+%{?scl:EOF}
 
 %build
-%{?scl_enable}
+%{?scl:scl enable %{scl_maven} %{scl} - << "EOF"}
 %mvn_build
-%{?scl_disable}
+%{?scl:EOF}
 
 %install
-%{?scl_enable}
+%{?scl:scl enable %{scl_maven} %{scl} - << "EOF"}
 %mvn_install
-%{?scl_disable}
+%{?scl:EOF}
 
 # Place a file into ant's config dir
-%{!?scl:mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/ant.d/}
-%{?scl:mkdir -p $RPM_BUILD_ROOT%{_root_sysconfdir}/ant.d/}
-%{!?scl:echo "ant/%{pkg_name}" > $RPM_BUILD_ROOT/%{_sysconfdir}/ant.d/%{pkg_name}}
-%{?scl:echo "ant/%{pkg_name}" > $RPM_BUILD_ROOT/%{_root_sysconfdir}/ant.d/%{pkg_name}}
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/ant.d/}
+echo "ant/%{pkg_name}" > $RPM_BUILD_ROOT/%{_sysconfdir}/ant.d/%{pkg_name}}
 
 %files -f .mfiles
 %doc LICENSE NOTICE README.fedora
-%{!?scl:%{_sysconfdir}/ant.d/%{pkg_name}}
-%{?scl:%{_root_sysconfdir}/ant.d/%{pkg_name}}
+%{_sysconfdir}/ant.d/%{pkg_name}}
 
 %files javadoc -f .mfiles-javadoc
 %doc LICENSE NOTICE
 
 %changelog
+* Wed Oct 26 2016 Tomas Repik <trepik@redhat.com> - 1.0b5-18
+- use standard SCL macros
+
 * Wed Aug 10 2016 Tomas Repik <trepik@redhat.com> - 1.0b5-17
 - scl conversion
 - added missing build dependency (maven-source-plugin)
